@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EstateGenius AI Assistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .chat-container {
+            height: calc(100vh - 4rem);
+        }
+        
+        .message {
+            max-width: 80%;
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+        
+        .message-wrapper {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 0.5rem;
+        }
+        
+        .user-message {
+            background-color: #2563eb;
+            color: white;
+            border-radius: 1rem 0 1rem 1rem;
+            margin-left: auto;
+        }
+        
+        .bot-message {
+            background-color: #f3f4f6;
+            color: #1f2937;
+            border-radius: 0 1rem 1rem 1rem;
+            margin-right: auto;
+        }
+        
+        .message-time {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-top: 0.25rem;
+        }
+        
+        .user-message .message-time {
+            text-align: right;
+        }
+        
+        .message-status {
+            position: absolute;
+            bottom: -1.25rem;
+            right: 0;
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+        
+        .typing-indicator {
+            display: none;
+            padding: 1rem;
+            background-color: #f3f4f6;
+            border-radius: 0 1rem 1rem 1rem;
+            max-width: 80%;
+            margin-left: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .typing-indicator span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: #6b7280;
+            border-radius: 50%;
+            margin-right: 4px;
+            animation: typing 1s infinite;
+        }
+        
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes typing {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .quick-replies {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .quick-reply {
+            background-color: #e5e7eb;
+            color: #374151;
+            padding: 0.5rem 1rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quick-reply:hover {
+            background-color: #d1d5db;
+            transform: translateY(-1px);
+        }
+
+        .message-content {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .message-actions {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            display: none;
+        }
+
+        .message:hover .message-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .message-action-btn {
+            padding: 0.25rem;
+            color: #6b7280;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .message-action-btn:hover {
+            color: #374151;
+        }
+
+        .user-message .message-action-btn {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .user-message .message-action-btn:hover {
+            color: white;
+        }
+
+        .input-wrapper {
+            position: relative;
+            flex: 1;
+        }
+
+        .input-wrapper textarea {
+            resize: none;
+            min-height: 44px;
+            max-height: 120px;
+        }
+
+        .input-wrapper .char-count {
+            position: absolute;
+            bottom: 0.5rem;
+            right: 0.5rem;
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+
+        .suggestions {
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        .suggestion-item {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .suggestion-item:hover {
+            background-color: #f3f4f6;
+        }
+
+        .suggestion-item.active {
+            background-color: #e5e7eb;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md fixed w-full z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="flex items-center">
+                        <i class="fas fa-home text-blue-600 text-2xl mr-2"></i>
+                        <span class="font-bold text-xl text-gray-800">EstateGenius</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Chat Container -->
+    <div class="chat-container pt-16 flex flex-col">
+        <!-- Chat Header -->
+        <div class="bg-white shadow-sm p-4">
+            <div class="max-w-4xl mx-auto flex items-center">
+                <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                    <i class="fas fa-robot text-blue-600 text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <h2 class="text-lg font-semibold text-gray-900">AI Assistant</h2>
+                    <p class="text-sm text-gray-500">Ask me anything about real estate</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Messages -->
+        <div id="chat-messages" class="flex-1 overflow-y-auto p-4">
+            <!-- Welcome Message -->
+            <div class="message bot-message">
+                <div class="message-wrapper">
+                    <div class="message-content p-4">
+                        <p>Hello! I'm your EstateGenius AI Assistant. I can help you with:</p>
+                        <ul class="list-disc ml-4 mt-2">
+                            <li>Finding properties based on your preferences</li>
+                            <li>Market analysis and trends</li>
+                            <li>Mortgage calculations</li>
+                            <li>Neighborhood insights</li>
+                            <li>Investment advice</li>
+                        </ul>
+                        <p class="mt-2">What would you like to know?</p>
+                    </div>
+                    <div class="message-time px-4">Just now</div>
+                </div>
+                <div class="quick-replies px-4">
+                    <div class="quick-reply">Find properties in my area</div>
+                    <div class="quick-reply">Calculate mortgage payments</div>
+                    <div class="quick-reply">Market trends analysis</div>
+                    <div class="quick-reply">Investment opportunities</div>
+                </div>
+            </div>
+            
+            <!-- Typing Indicator -->
+            <div id="typing-indicator" class="typing-indicator">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+
+        <!-- Chat Input -->
+        <div class="bg-white border-t p-4">
+            <div class="max-w-4xl mx-auto">
+                <form id="chat-form" class="flex space-x-4">
+                    <div class="input-wrapper">
+                        <textarea id="user-input" 
+                                class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                placeholder="Type your message here..."
+                                rows="1"
+                                maxlength="500"></textarea>
+                        <div class="char-count">0/500</div>
+                        <div class="suggestions" id="suggestions"></div>
+                    </div>
+                    <button type="submit" 
+                            class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 flex items-center">
+                        <span>Send</span>
+                        <i class="fas fa-paper-plane ml-2"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatForm = document.getElementById('chat-form');
+            const userInput = document.getElementById('user-input');
+            const chatMessages = document.getElementById('chat-messages');
+            const typingIndicator = document.getElementById('typing-indicator');
+            const charCount = document.querySelector('.char-count');
+            const suggestions = document.getElementById('suggestions');
+
+            // Auto-resize textarea
+            userInput.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = (this.scrollHeight) + 'px';
+                charCount.textContent = `${this.value.length}/500`;
+            });
+
+            // Function to format time
+            function formatTime(date) {
+                const hours = date.getHours().toString().padStart(2, '0');
+                const minutes = date.getMinutes().toString().padStart(2, '0');
+                return `${hours}:${minutes}`;
+            }
+
+            // Function to clean text (remove markdown and format properly)
+            function cleanText(text) {
+                // Remove markdown formatting
+                text = text.replace(/\*\*/g, '')  // Remove bold
+                          .replace(/\*/g, '')     // Remove italic
+                          .replace(/`/g, '')      // Remove code
+                          .replace(/#{1,6}\s/g, '') // Remove headers
+                          .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // Convert links to text
+                          .replace(/^\s*[-*]\s*/gm, '• '); // Convert bullet points to bullet character
+                
+                // Split into lines and clean each line
+                return text.split('\n')
+                          .map(line => line.trim())
+                          .filter(line => line.length > 0)
+                          .join('\n');
+            }
+
+            // Function to add a message to the chat with line-by-line animation
+            async function addMessage(message, isUser = false) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+                
+                const messageWrapper = document.createElement('div');
+                messageWrapper.className = 'message-wrapper';
+                
+                const messageContent = document.createElement('div');
+                messageContent.className = 'message-content p-4';
+                
+                const messageTime = document.createElement('div');
+                messageTime.className = 'message-time px-4';
+                messageTime.textContent = formatTime(new Date());
+                
+                messageWrapper.appendChild(messageContent);
+                messageWrapper.appendChild(messageTime);
+                
+                if (isUser) {
+                    const messageStatus = document.createElement('div');
+                    messageStatus.className = 'message-status';
+                    messageStatus.innerHTML = '<i class="fas fa-check"></i>';
+                    messageDiv.appendChild(messageStatus);
+                }
+                
+                messageDiv.appendChild(messageWrapper);
+                chatMessages.appendChild(messageDiv);
+                
+                if (!isUser) {
+                    // Clean and split the message into lines
+                    const cleanedMessage = cleanText(message);
+                    const lines = cleanedMessage.split('\n');
+                    
+                    // Add each line with a delay
+                    for (const line of lines) {
+                        const lineElement = document.createElement('p');
+                        lineElement.className = 'mb-2';
+                        lineElement.textContent = line;
+                        messageContent.appendChild(lineElement);
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                        await new Promise(resolve => setTimeout(resolve, 100)); // 50ms delay between lines
+                    }
+                } else {
+                    messageContent.innerHTML = `<p>${message}</p>`;
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }
+            }
+
+            // Handle form submission
+            chatForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const message = userInput.value.trim();
+                if (!message) return;
+
+                // Add user message to chat
+                addMessage(message, true);
+                userInput.value = '';
+                userInput.style.height = 'auto';
+                charCount.textContent = '0/500';
+
+                // Show typing indicator
+                typingIndicator.style.display = 'block';
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+
+                try {
+                    // Send message to backend
+                    const response = await fetch('/gemini', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ message: message })
+                    });
+
+                    const data = await response.json();
+                    
+                    // Hide typing indicator
+                    typingIndicator.style.display = 'none';
+
+                    // Add bot response to chat
+                    if (data.response) {
+                        await addMessage(data.response);
+                        // Add quick replies if they exist in the response
+                        if (data.quick_replies) {
+                            const quickRepliesDiv = document.createElement('div');
+                            quickRepliesDiv.className = 'quick-replies px-4';
+                            data.quick_replies.forEach(reply => {
+                                const quickReply = document.createElement('div');
+                                quickReply.className = 'quick-reply';
+                                quickReply.textContent = reply;
+                                quickReply.addEventListener('click', () => {
+                                    userInput.value = reply;
+                                    chatForm.dispatchEvent(new Event('submit'));
+                                });
+                                quickRepliesDiv.appendChild(quickReply);
+                            });
+                            chatMessages.lastElementChild.appendChild(quickRepliesDiv);
+                        }
+                    } else {
+                        await addMessage('Sorry, I encountered an error. Please try again.');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    typingIndicator.style.display = 'none';
+                    await addMessage('Sorry, I encountered an error. Please try again.');
+                }
+
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            });
+
+            // Handle enter key
+            userInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    chatForm.dispatchEvent(new Event('submit'));
+                }
+            });
+
+            // Handle quick reply clicks
+            document.querySelectorAll('.quick-reply').forEach(reply => {
+                reply.addEventListener('click', () => {
+                    userInput.value = reply.textContent;
+                    chatForm.dispatchEvent(new Event('submit'));
+                });
+            });
+
+            // Simple command suggestions
+            const commonCommands = [
+                'Find properties in my area',
+                'Calculate mortgage payments',
+                'Show market trends',
+                'Investment opportunities',
+                'Compare neighborhoods',
+                'Property value estimate'
+            ];
+
+            userInput.addEventListener('input', function() {
+                const value = this.value.toLowerCase();
+                if (value.length > 0) {
+                    const matches = commonCommands.filter(cmd => 
+                        cmd.toLowerCase().includes(value)
+                    );
+                    
+                    if (matches.length > 0) {
+                        suggestions.innerHTML = matches.map(cmd => 
+                            `<div class="suggestion-item">${cmd}</div>`
+                        ).join('');
+                        suggestions.style.display = 'block';
+                    } else {
+                        suggestions.style.display = 'none';
+                    }
+                } else {
+                    suggestions.style.display = 'none';
+                }
+            });
+
+            // Handle suggestion clicks
+            suggestions.addEventListener('click', function(e) {
+                if (e.target.classList.contains('suggestion-item')) {
+                    userInput.value = e.target.textContent;
+                    suggestions.style.display = 'none';
+                    chatForm.dispatchEvent(new Event('submit'));
+                }
+            });
+
+            // Close suggestions when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!userInput.contains(e.target) && !suggestions.contains(e.target)) {
+                    suggestions.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

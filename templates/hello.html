@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EstateGenius - AI-Powered Real Estate</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .hero-gradient {
+            background: linear-gradient(to right, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.3)), url('/api/placeholder/1200/800') no-repeat center center;
+            background-size: cover;
+        }
+        
+        .property-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md fixed w-full z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <i class="fas fa-home text-blue-600 text-2xl mr-2"></i>
+                        <span class="font-bold text-xl text-gray-800">EstateGenius</span>
+                    </div>
+                    <div class="hidden md:ml-6 md:flex md:space-x-6">
+                        <a href="#" class="border-b-2 border-blue-500 text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium">Home</a>
+                        <a href="#" class="border-transparent border-b-2 hover:border-gray-300 text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">Properties</a>
+                        <a href="#" class="border-transparent border-b-2 hover:border-gray-300 text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">Services</a>
+                        <a href="#" class="border-transparent border-b-2 hover:border-gray-300 text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">About</a>
+                        <a href="#" class="border-transparent border-b-2 hover:border-gray-300 text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">Contact</a>
+                        <a href="/chat" class="border-transparent border-b-2 hover:border-gray-300 text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">
+                            <i class="fas fa-robot mr-1 text-blue-500"></i> AI Assistant
+                        </a>
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <button id="login-btn" class="px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-800">Sign In</button>
+                    <button id="register-btn" class="ml-3 px-4 py-2 rounded-md text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Register</button>
+                    <div class="ml-3 md:hidden flex items-center">
+                        <button id="mobile-menu-btn" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile menu, show/hide based on menu state -->
+        <div id="mobile-menu" class="md:hidden hidden">
+            <div class="pt-2 pb-3 space-y-1">
+                <a href="#" class="bg-blue-50 border-blue-500 text-blue-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Home</a>
+                <a href="#" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Properties</a>
+                <a href="#" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Services</a>
+                <a href="#" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">About</a>
+                <a href="#" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Contact</a>
+                <a href="/gemini" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">
+                    <i class="fas fa-robot mr-1 text-blue-500"></i> AI Assistant
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero-gradient pt-32 pb-20 md:pt-40 md:pb-28">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center md:text-left">
+            <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">Find Your Dream Home with AI</h1>
+            <p class="text-xl text-gray-200 mb-8 max-w-2xl">EstateGenius combines real estate expertise with artificial intelligence to find the perfect property for you.</p>
+            <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 justify-center md:justify-start">
+                <a href="#search" class="px-8 py-3 rounded-md bg-blue-600 text-white font-medium hover:bg-blue-700 transition-colors duration-300">Search Properties</a>
+                <a href="/chat" class="px-8 py-3 rounded-md bg-white text-blue-600 font-medium hover:bg-gray-100 transition-colors duration-300 flex items-center justify-center">
+                    <i class="fas fa-robot mr-2"></i> Ask Our AI Assistant
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Testimonials Section (continued) -->
+    <div class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">What Our Clients Say</h2>
+                <p class="max-w-2xl mx-auto text-xl text-gray-500">Read testimonials from our satisfied clients</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Testimonial 1 -->
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="flex items-center mb-4">
+                        <div class="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center">
+                            <i class="fas fa-user text-blue-600"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="font-medium text-gray-900">Sarah Johnson</h3>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600">"The AI assistant helped me narrow down my search so efficiently. I found my dream home in just two weeks, and the market insights helped me negotiate a great price."</p>
+                </div>
+                
+                <!-- Testimonial 2 -->
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="flex items-center mb-4">
+                        <div class="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center">
+                            <i class="fas fa-user text-blue-600"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="font-medium text-gray-900">Michael Chen</h3>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600">"I was new to real estate investing, and the AI assistant answered all my questions and guided me through the entire process. The neighborhood analysis tool was incredibly helpful."</p>
+                </div>
+                
+                <!-- Testimonial 3 -->
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="flex items-center mb-4">
+                        <div class="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center">
+                            <i class="fas fa-user text-blue-600"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="font-medium text-gray-900">Emily Rodriguez</h3>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600">"Being able to chat with the AI assistant 24/7 made the house hunting process so much less stressful. It answered all my questions instantly and helped me find the perfect family home."</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="py-16 bg-blue-600">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl font-bold text-white mb-4">Ready to Find Your Dream Home?</h2>
+            <p class="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">Create an account today and start your journey with EstateGenius</p>
+            <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 justify-center">
+                <button id="cta-register-btn" class="px-8 py-3 rounded-md bg-white text-blue-600 font-medium hover:bg-blue-50 transition-colors duration-300">Create Free Account</button>
+                <a href="/gemini" class="px-8 py-3 rounded-md bg-transparent border-2 border-white text-white font-medium hover:bg-blue-700 transition-colors duration-300 flex items-center justify-center">
+                    <i class="fas fa-robot mr-2"></i> Chat with AI Assistant
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <!-- Company Info -->
+                <div>
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-home text-blue-400 text-2xl mr-2"></i>
+                        <span class="font-bold text-xl">EstateGenius</span>
+                    </div>
+                    <p class="text-gray-400 mb-4">AI-powered real estate platform that combines cutting-edge technology with expert human agents.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Quick Links -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Home</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Properties</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Services</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">About Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Contact</a></li>
+                        <li><a href="/gemini" class="text-gray-400 hover:text-white">AI Assistant</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Services -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Our Services</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Property Search</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">AI Recommendations</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Market Analysis</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Mortgage Calculator</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Neighborhood Insights</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Investment Advisory</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Contact -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Contact Us</h3>
+                    <ul class="space-y-2">
+                        <li class="flex items-start">
+                            <i class="fas fa-map-marker-alt mt-1 mr-3 text-blue-400"></i>
+                            <span class="text-gray-400">123 Real Estate Ave, Suite 100, New York, NY 10001</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-phone-alt mr-3 text-blue-400"></i>
+                            <span class="text-gray-400">(555) 123-4567</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-envelope mr-3 text-blue-400"></i>
+                            <span class="text-gray-400">info@estategenius.com</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-12 pt-8">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <p class="text-gray-400 text-sm mb-4 md:mb-0">&copy; 2025 EstateGenius. All rights reserved.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 text-sm hover:text-white">Privacy Policy</a>
+                        <a href="#" class="text-gray-400 text-sm hover:text-white">Terms of Service</a>
+                        <a href="#" class="text-gray-400 text-sm hover:text-white">Cookie Policy</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-lg max-w-md w-full p-6 fade-in">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-gray-900">Sign In</h3>
+                <button class="modal-close text-gray-400 hover:text-gray-500">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="login-form">
+                <div class="mb-4">
+                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input type="email" id="email" class="block w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" placeholder="Enter your email">
+                </div>
+                <div class="mb-6">
+                    <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                    <input type="password" id="password" class="block w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" placeholder="Enter your password">
+                </div>
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center">
+                        <input type="checkbox" id="remember-me" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                        <label for="remember-me" class="ml-2 block text-sm text-gray-700">Remember me</label>
+                    </div>
+                    <a href="#" class="text-sm font-medium text-blue-600 hover:text-blue-500">Forgot password?</a>
+                </div>
+                <button type="submit" class="w-full p-3 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition-colors duration-300">Sign In</button>
+            </form>
+            <div class="mt-6 text-center">
+                <p class="text-sm text-gray-600">Don't have an account? <a href="#" id="switch-to-register" class="font-medium text-blue-600 hover:text-blue-500">Create one now</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="register-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-lg max-w-md w-full p-6 fade-in">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-gray-900">Create Account</h3>
+                <button class="modal-close text-gray-400 hover:text-gray-500">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="register-form">
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label for="first-name" class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                        <input type="text" id="first-name" class="block w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" placeholder="First name">
+                    </div>
+                    <div>
+                        <label for="last-name" class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                        <input type="text" id="last-name" class="block w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" placeholder="Last name">
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label for="reg-email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input type="email" id="reg-email" class="block w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" placeholder="Enter your email">
+                </div>
+                <div class="mb-4">
+                    <label for="reg-password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                    <input type="password" id="reg-password" class="block w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" placeholder="Create a password">
+                </div>
+                <div class="mb-6">
+                    <label for="confirm-password" class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+                    <input type="password" id="confirm-password" class="block w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" placeholder="Confirm your password">
+                </div>
+                <div class="flex items-center mb-6">
+                    <input type="checkbox" id="terms" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                    <label for="terms" class="ml-2 block text-sm text-gray-700">I agree to the <a href="#" class="text-blue-600 hover:text-blue-500">Terms of Service</a> and <a href="#" class="text-blue-600 hover:text-blue-500">Privacy Policy</a></label>
+                </div>
+                <button type="submit" class="w-full p-3 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition-colors duration-300">Create Account</button>
+            </form>
+            <div class="mt-6 text-center">
+                <p class="text-sm text-gray-600">Already have an account? <a href="#" id="switch-to-login" class="font-medium text-blue-600 hover:text-blue-500">Sign in</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile menu toggle
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            mobileMenuBtn.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            // Modal functionality
+            const loginBtn = document.getElementById('login-btn');
+            const registerBtn = document.getElementById('register-btn');
+            const ctaRegisterBtn = document.getElementById('cta-register-btn');
+            const loginModal = document.getElementById('login-modal');
+            const registerModal = document.getElementById('register-modal');
+            const switchToRegister = document.getElementById('switch-to-register');
+            const switchToLogin = document.getElementById('switch-to-login');
+            const modalCloseButtons = document.querySelectorAll('.modal-close');
+            
+            loginBtn.addEventListener('click', function() {
+                loginModal.classList.remove('hidden');
+            });
+            
+            registerBtn.addEventListener('click', function() {
+                registerModal.classList.remove('hidden');
+            });
+            
+            ctaRegisterBtn.addEventListener('click', function() {
+                registerModal.classList.remove('hidden');
+            });
+            
+            switchToRegister.addEventListener('click', function(e) {
+                e.preventDefault();
+                loginModal.classList.add('hidden');
+                registerModal.classList.remove('hidden');
+            });
+            
+            switchToLogin.addEventListener('click', function(e) {
+                e.preventDefault();
+                registerModal.classList.add('hidden');
+                loginModal.classList.remove('hidden');
+            });
+            
+            modalCloseButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    loginModal.classList.add('hidden');
+                    registerModal.classList.add('hidden');
+                });
+            });
+            
+            // Close modals when clicking outside
+            window.addEventListener('click', function(e) {
+                if (e.target === loginModal) {
+                    loginModal.classList.add('hidden');
+                }
+                if (e.target === registerModal) {
+                    registerModal.classList.add('hidden');
+                }
+            });
+            // FAQ accordions
+            const faqButtons = document.querySelectorAll('.bg-white.rounded-lg button');
+            faqButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const content = button.nextElementSibling;
+                    const icon = button.querySelector('i');
+                    
+                    if (content.classList.contains('hidden')) {
+                        content.classList.remove('hidden');
+                        icon.classList.remove('fa-chevron-down');
+                        icon.classList.add('fa-chevron-up');
+                    } else {
+                        content.classList.add('hidden');
+                        icon.classList.remove('fa-chevron-up');
+                        icon.classList.add('fa-chevron-down');
+                    }
+                });
+            });
+
+            // show the first FAQ open by default
+            if (faqButtons.length > 0) {
+                const firstContent = faqButtons[0].nextElementSibling;
+                const firstIcon = faqButtons[0].querySelector('i');
+                
+                firstContent.classList.remove('hidden');
+                firstIcon.classList.remove('fa-chevron-down');
+                firstIcon.classList.add('fa-chevron-up');
+            }
+            
+            // AI Search Assistant modal
+            const aiSearchBtn = document.getElementById('ai-search-btn');
+            if (aiSearchBtn) {
+                aiSearchBtn.addEventListener('click', () => {
+                    alert('AI Search Assistant is coming soon!');
+                });
+            }
+            
+            // Property search form submission
+            const searchForm = document.getElementById('property-search-form');
+            if (searchForm) {
+                searchForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    alert('Search functionality would be implemented here!');
+                });
+            }
+            
+            // Form submission handling
+            const loginForm = document.getElementById('login-form');
+            const registerForm = document.getElementById('register-form');
+            
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                
+                // Send to Flask backend
+                fetch('/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.href = '/dashboard';
+                    } else {
+                        alert('Login failed: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            });
+            
+            registerForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const firstName = document.getElementById('first-name').value;
+                const lastName = document.getElementById('last-name').value;
+                const email = document.getElementById('reg-email').value;
+                const password = document.getElementById('reg-password').value;
+                const confirmPassword = document.getElementById('confirm-password').value;
+                
+                // Basic validation
+                if (password !== confirmPassword) {
+                    alert('Passwords do not match!');
+                    return;
+                }
+                
+                // Send to Flask backend
+                fetch('/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ firstName, lastName, email, password })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Registration successful! Please sign in.');
+                        registerModal.classList.add('hidden');
+                        loginModal.classList.remove('hidden');
+                    } else {
+                        alert('Registration failed: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
