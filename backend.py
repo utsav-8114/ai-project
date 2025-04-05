@@ -5,7 +5,7 @@ import requests
 backend_app = Blueprint('backend_app',__name__)
 
 # API key directly in code
-api_key = "AIzaSyCXrGYdexNO2Nj7T4TdMqQmoO6GitQ7LWQ"
+api_key = "enter the api key"
 genai.configure(api_key=api_key)
 
 @backend_app.route('/')
