@@ -49,7 +49,7 @@
                         <a href="#" class="border-transparent border-b-2 hover:border-gray-300 text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">Services</a>
                         <a href="#" class="border-transparent border-b-2 hover:border-gray-300 text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">About</a>
                         <a href="#" class="border-transparent border-b-2 hover:border-gray-300 text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">Contact</a>
-                        <a href="/chat" class="border-transparent border-b-2 hover:border-gray-300 text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">
+                        <a href="/room" class="border-transparent border-b-2 hover:border-gray-300 text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">
                             <i class="fas fa-robot mr-1 text-blue-500"></i> AI Assistant
                         </a>
                     </div>
@@ -88,7 +88,7 @@
             <p class="text-xl text-gray-200 mb-8 max-w-2xl">EstateGenius combines real estate expertise with artificial intelligence to find the perfect property for you.</p>
             <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 justify-center md:justify-start">
                 <a href="#search" class="px-8 py-3 rounded-md bg-blue-600 text-white font-medium hover:bg-blue-700 transition-colors duration-300">Search Properties</a>
-                <a href="/chat" class="px-8 py-3 rounded-md bg-white text-blue-600 font-medium hover:bg-gray-100 transition-colors duration-300 flex items-center justify-center">
+                <a href="/room" class="px-8 py-3 rounded-md bg-white text-blue-600 font-medium hover:bg-gray-100 transition-colors duration-300 flex items-center justify-center">
                     <i class="fas fa-robot mr-2"></i> Ask Our AI Assistant
                 </a>
             </div>
@@ -501,7 +501,7 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ firstName, lastName, email, password })
+                    body: JSON.stringify({ first_name, second_name, email, password })
                 })
                 .then(response => response.json())
                 .then(data => {
@@ -517,6 +517,34 @@
                     console.error('Error:', error);
                 });
             });
+
+            // Chat functionality with history
+            let conversationHistory = [];
+            async function sendMessage() {
+                const userInput = document.getElementById("userInput").value;
+                if (!userInput.trim()) return;
+
+                conversationHistory.push({ user: userInput, bot: "" });
+                
+                try {
+                    const response = await fetch("/gemini", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ message: userInput, history: conversationHistory })
+                    });
+
+                    const data = await response.json();
+                    if (data.response) {
+                        conversationHistory[conversationHistory.length - 1].bot = data.response;
+                        displayMessage("User", userInput);
+                        displayMessage("Bot", data.response);
+                    }
+                } catch (error) {
+                    console.error("Error sending message:", error);
+                }
+
+                document.getElementById("userInput").value = "";
+            }
         });
     </script>
 </body>

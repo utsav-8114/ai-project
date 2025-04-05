@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="output.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=screen_search_desktop" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=location_on" />
+    <style>
+        @keyframes fade-in {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in {
+            animation: fade-in 1.5s ease-in-out forwards;
+            opacity: 0;
+        }
+
+        .delay-\[300ms\] {
+            animation-delay: 0.2s;
+        }
+
+        .delay-\[600ms\] {
+            animation-delay: 0.4s;
+        }
+
+        .delay-\[900ms\] {
+            animation-delay: 0.6s;
+        }
+
+        .fade-transition {
+            transition: opacity 1s ease-in-out;
+        }
+
+        .background-image {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            z-index: -1;
+        }
+
+        .visible {
+            opacity: 1;
+            z-index: 1;
+        }
+
+        .navigation-buttons {
+            position: absolute;
+            bottom: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            z-index: 10;
+        }
+
+        .navigation-buttons button {
+            width: 20px;
+            height: 20px;
+            background-color: white;
+            border: none;
+            border-radius: 50%;
+            opacity: 0.5;
+            transition: opacity 0.3s;
+        }
+
+        .navigation-buttons button:hover {
+            opacity: 1;
+        }
+
+        /* Styling for new buttons */
+        .action-buttons {
+            position: absolute;
+            bottom: 80px;
+            display: flex;
+            gap: 20px;
+            z-index: 20;
+        }
+
+        .action-buttons button {
+            padding: 12px 30px;
+            font-size: 16px;
+            background-color: rgba(0, 0, 0, 0.5);
+            /* Blackish transparent */
+            color: white;
+            border-radius: 8px;
+            /* Slightly rounded corners */
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: background-color 0.3s ease-in-out, transform 0.3s ease;
+        }
+
+        .action-buttons button:hover {
+            background-color: rgba(0, 0, 0, 0.7);
+            /* Darker blackish background on hover */
+            transform: scale(1.05);
+            /* Slight scaling effect on hover */
+        }
+
+        .action-buttons .ai-btn {
+            background-color: rgba(0, 0, 0, 0.5);
+            /* Same blackish transparent for the second button */
+        }
+
+        .action-buttons .ai-btn:hover {
+            background-color: rgba(0, 0, 0, 0.7);
+            /* Darker hover state */
+        }
+
+        @keyframes fadeInLeft {
+            0% {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeInRight {
+            0% {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .animate-fade-in-left {
+            animation: fadeInLeft 1s ease-out forwards;
+        }
+
+        .animate-fade-in-right {
+            animation: fadeInRight 1s ease-out forwards;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- navbar -->
+    <nav class="bg-white shadow-md fixed w-full z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <i class="fas fa-home text-blue-600 text-2xl mr-2"></i>
+                        <span class="font-bold text-xl text-gray-800">EstateGenius</span>
+                    </div>
+                    <div class="hidden md:ml-6 md:flex md:space-x-6">
+                        <a href="#"
+                            class="border-b-2 border-blue-500 text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium">Home</a>
+                        <a href="#"
+                            class="border-transparent border-b-2 hover:border-gray-300 text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">About</a>
+                        <a href="#"
+                            class="border-transparent border-b-2 hover:border-gray-300 text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">Services</a>
+                        <a href="#"
+                            class="border-transparent border-b-2 hover:border-gray-300 text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">Properties</a>
+                        <a href="#"
+                            class="border-transparent border-b-2 hover:border-gray-300 text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">Contact</a>
+                        <a href="/chat"
+                            class="border-transparent border-b-2 hover:border-gray-300 text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">
+                            <i class="fas fa-robot mr-1 text-blue-500"></i> AI Assistant
+                        </a>
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <button id="open-login" class="px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-800">Sign
+                        In</button>
+                    <button id="open-register"
+                        class="ml-3 px-4 py-2 rounded-md text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Register</button>
+                    <div class="ml-3 md:hidden flex items-center">
+                        <button id="mobile-menu-btn"
+                            class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- body image -->
+    <div class="relative h-[900px] w-full flex justify-center items-center text-center text-white">
+        <!-- Background Images -->
+        <div id="bg-image-1"
+            class="background-image bg-[url('https://htmldemo.net/dominno/dominno/images/slider/1.jpg')] brightness-40">
+        </div>
+        <div id="bg-image-2"
+            class="background-image bg-[url('https://htmldemo.net/dominno/dominno/images/slider/2.jpg')] brightness-40">
+        </div>
+
+        <div class="relative h-[800px] w-full flex justify-center items-center text-center text-white">
+            <!-- Animated Text -->
+            <div class="relative z-10 max-w-3xl">
+                <p class="text-2xl font-bold uppercase animate-fade-in delay-[300ms]">FIND YOUR DREAM HOME WITH AI</p>
+                <p class="text-5xl font-semibold mt-2 animate-fade-in delay-[600ms]">EstateGenius ALWAYS WITH YOU</p>
+                <p class="text-lg mt-4 animate-fade-in delay-[900ms]">EstateGenius combines real estate expertise
+                    with artificial intelligence to find the perfect property for you.</p>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="navigation-buttons">
+                <button class="opacity-50" onclick="changeImage(0)"></button>
+                <button class="opacity-50" onclick="changeImage(1)"></button>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button onclick="window.location.href='/search-properties'"
+                    class="px-6 py-3 text-lg font-semibold">Search Property</button>
+                <button onclick="window.location.href='/chat'" class="ai-btn px-6 py-3 text-lg font-semibold">Ask AI
+                    Assistant</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Know About -->
+    <section id="about-section"
+        class="flex items-center justify-between py-20 px-6 lg:px-16 mt-20 space-x-20 opacity-0 transition-opacity duration-1000">
+        <div class="w-full lg:w-1/2">
+            <img class="rounded-lg shadow-lg w-full h-auto"
+                src="https://static.vecteezy.com/system/resources/thumbnails/056/517/049/small/a-sketch-of-a-house-with-a-large-porch-free-photo.jpg"
+                alt="EstateGenius Image">
+        </div>
+        <div class="w-full lg:w-1/2 pl-6 relative">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6">Know About EstateGenius</h2>
+            <span
+                class="opacity-10 uppercase text-7xl font-bold tracking-wider absolute left-[190px] transform -translate-x-1/2 top-[20px]  -translate-y-1/2 z-[-1]">
+                ABOUT
+            </span>
+            <p class="text-lg text-gray-600 mb-4">
+                <b>EstateGenius</b> is a cutting-edge real estate platform that leverages artificial intelligence to
+                provide you
+                with the best property options. Whether you're buying, renting, or selling, EstateGenius uses smart
+                algorithms to match you with your ideal property based on your preferences, budget, and location.
+            </p>
+            <p class="text-lg text-gray-600 mb-4">
+                Our platform is designed to simplify the property search process, making it faster, smarter, and more
+                efficient. With EstateGenius, you can rely on AI-powered recommendations to find the property of your
+                dreams.
+            </p>
+            <p class="text-lg text-gray-600 mb-4">
+                Join us today and experience the future of real estate with EstateGenius – where artificial intelligence
+                meets your real estate needs.
+            </p>
+        </div>
+    </section>
+
+    <!-- services -->
+
+    <section id="services-section" class="py-20 px-6 lg:px-16">
+        <div class="text-center relative">
+            <h2 class="uppercase text-3xl font-extrabold tracking-wider mt-4 mb-8 z-10 relative">OUR SERVICES</h2>
+            <span
+                class="opacity-10 uppercase text-6xl font-bold tracking-wider absolute left-1/2 transform -translate-x-1/2 bottom-0 z-0">
+                OUR SERVICES
+            </span>
+        </div>
+        <!-- Your services content goes here -->
+        <div class="mt-4 text-lg font-medium text-gray-700">
+            <p class="mb-4 mx-auto flex justify-center items-center">We specialize in buying, selling, and renting
+                residential and commercial properties.<br> Our team ensures a seamless experience with expert guidance
+                every step of the way.</p>
+        </div>
+
+        <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Sale Card -->
+            <div
+                class="card bg-white shadow-lg rounded-lg overflow-hidden transform transition-all hover:scale-105 hover:shadow-xl">
+                <img class="w-full h-56 object-cover"
+                    src="https://media.istockphoto.com/id/177735411/photo/home-for-sale-real-estate-sign-and-house.jpg?s=612x612&w=0&k=20&c=rlxoVGQLRX8PR3UCkUi8Vlw9wCztLoe0C2J7PHOpecQ="
+                    alt="Sale Service">
+                <div class="p-6">
+                    <h3 class="text-2xl font-semibold text-gray-800 mb-2">Real Estate Sales</h3>
+                    <p class="text-gray-600">Find the perfect property to purchase with expert guidance and personalized
+                        options tailored to your needs.</p>
+                </div>
+            </div>
+
+            <!-- Buy Card -->
+            <div
+                class="card bg-white shadow-lg rounded-lg overflow-hidden transform transition-all hover:scale-105 hover:shadow-xl">
+                <img class="w-full h-56 object-cover"
+                    src="https://st.depositphotos.com/1194063/2151/i/450/depositphotos_21515189-stock-photo-agent-with-house-model-and.jpg"
+                    alt="Buy Service">
+                <div class="p-6">
+                    <h3 class="text-2xl font-semibold text-gray-800 mb-2">Property Buying</h3>
+                    <p class="text-gray-600">Browse and purchase residential or commercial properties with ease and
+                        transparency. Get assistance every step of the way.</p>
+                </div>
+            </div>
+
+            <!-- Rent Card -->
+            <div
+                class="card bg-white shadow-lg rounded-lg overflow-hidden transform transition-all hover:scale-105 hover:shadow-xl">
+                <img class="w-full h-56 object-cover"
+                    src="https://media.istockphoto.com/id/453195517/photo/home-for-rent-sign.jpg?s=612x612&w=0&k=20&c=iYdWJgb5kDLXjh9V52_g3YcX__pYdFauYF7qcaRe8Hw="
+                    alt="Rent Service">
+                <div class="p-6">
+                    <h3 class="text-2xl font-semibold text-gray-800 mb-2">Property Rentals</h3>
+                    <p class="text-gray-600">Find your ideal rental property for short or long-term stays. We offer a
+                        wide selection of apartments and houses to suit your needs.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- contact -->
+
+    <section id="contact-section" class="relative py-20 px-6 lg:px-16 mt-10">
+        <!-- Background Image Section with Blue Tint -->
+        <div class="absolute inset-0 bg-cover bg-center filter blur-sm"
+            style="background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxIzJ672UWBlb2wMXEigCegp0L8u9L3dWNpoXoxhPKF2VZcLBY0-uIm0DHVSz8EIpx5do&usqp=CAU');">
+        </div>
+        <!-- Blue Overlay -->
+        <div class="absolute inset-0 bg-blue-950 opacity-50"></div>
+
+        <!-- Content Box Overlay -->
+        <div class="relative z-10 text-center">
+            <h2 class="text-4xl font-extrabold text-white mb-4">BOOK YOUR APARTMENT OR HOUSE</h2>
+            <p class="text-lg text-white mb-8">We offer a wide range of properties for sale and rent. Get in touch with
+                us to find your perfect home.</p>
+            <a href="#contact-form"
+                class="inline-block bg-blue-500 text-white px-8 py-3 text-lg rounded-full hover:bg-blue-600 transition duration-300">Contact
+                Us</a>
+        </div>
+    </section>
+
+    <!-- fEATURED PROPERTY -->
+
+    <section id="featured-properties" class="py-20 px-6 lg:px-16 mt-10">
+        <div class="text-center mb-12 relative">
+            <h2 class="text-4xl font-extrabold text-gray-800">Featured Properties</h2>
+            <span
+                class="opacity-10 uppercase text-6xl font-bold tracking-wider absolute left-1/2 transform -translate-x-1/2 bottom-0 z-0">
+                FEATURED PROPERTIES
+            </span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-6xl mx-auto">
+            <!-- Featured Property Card 1 -->
+            <a href="#link">
+                <div
+                    class="feat_property bg-white shadow-lg rounded-lg overflow-hidden transform transition-all hover:scale-105 hover:shadow-xl w-80 mx-auto">
+                    <div class="thumb relative">
+                        <img class="w-full h-56 object-cover"
+                            src="https://creativelayers.net/themes/findhouse-html/images/property/fp1.jpg"
+                            alt="property image">
+                        <div class="thmb_cntnt absolute inset-0 flex justify-between p-4">
+                            <ul class="tag mb0 flex space-x-2">
+                                <li><span class="bg-blue-500 text-white px-3 py-1 text-xs rounded-full">For Rent</span>
+                                </li>
+                                <li><span
+                                        class="bg-yellow-500 text-white px-3 py-1 text-xs rounded-full">Featured</span>
+                                </li>
+                            </ul>
+                            <ul class="icon mb0 flex space-x-2">
+                                <li><span class="flaticon-transfer-1 text-white"></span></li>
+                                <li><span class="flaticon-heart text-white"></span></li>
+                            </ul>
+                        </div>
+                        <span
+                            class="fp_price absolute bottom-4 left-4 text-white font-bold text-lg">₹13,000<small>/mo</small></span>
+                    </div>
+
+                    <div class="details p-4">
+                        <div class="tc_content">
+                            <p class="text-thm text-sm">Apartment</p>
+                            <h4 class="text-xl font-semibold text-gray-800 mb-2">Renovated Apartment</h4>
+                            <p class="text-sm text-gray-600"><span class="flaticon-placeholder"></span> 1421 San Pedro
+                                St, Mumbai, Maharashtra, 400001</p>
+                            <ul class="prop_details mb-4 flex space-x-4 text-sm text-gray-500">
+                                <li><span>Beds: 4</span></li>
+                                <li><span>Baths: 2</span></li>
+                                <li><span>Sq Ft: 5280</span></li>
+                            </ul>
+                        </div>
+
+                        <div class="fp_footer flex justify-between items-center">
+                            <ul class="fp_meta flex space-x-2">
+                                <li><img class="w-8 h-8 rounded-full"
+                                        src="https://randomuser.me/api/portraits/men/45.jpg" alt="owner image"></li>
+                                <li><span class="text-sm text-gray-700">Amit Kumar</span></li>
+                            </ul>
+                            <div class="fp_pdate text-sm text-gray-400">1 year ago</div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Featured Property Card 2 -->
+            <a href="#link">
+                <div
+                    class="feat_property bg-white shadow-lg rounded-lg overflow-hidden transform transition-all hover:scale-105 hover:shadow-xl w-80 mx-auto">
+                    <div class="thumb relative">
+                        <img class="w-full h-56 object-cover"
+                            src="https://creativelayers.net/themes/findhouse-html/images/property/fp2.jpg"
+                            alt="property image">
+                        <div class="thmb_cntnt absolute inset-0 flex justify-between p-4">
+                            <ul class="tag mb0 flex space-x-2">
+                                <li><span class="bg-red-500 text-white px-3 py-1 text-xs rounded-full">For Sale</span>
+                                </li>
+                                <li><span class="bg-green-500 text-white px-3 py-1 text-xs rounded-full">Featured</span>
+                                </li>
+                            </ul>
+                            <ul class="icon mb0 flex space-x-2">
+                                <li><span class="flaticon-transfer-1 text-white"></span></li>
+                                <li><span class="flaticon-heart text-white"></span></li>
+                            </ul>
+                        </div>
+                        <span
+                            class="fp_price absolute bottom-4 left-4 text-white font-bold text-lg">₹8,500<small>/mo</small></span>
+                    </div>
+
+                    <div class="details p-4">
+                        <div class="tc_content">
+                            <p class="text-thm text-sm">House</p>
+                            <h4 class="text-xl font-semibold text-gray-800 mb-2">Luxury Villa</h4>
+                            <p class="text-sm text-gray-600"><span class="flaticon-placeholder"></span> 2142 Sunset
+                                Blvd, Bengaluru, Karnataka, 560001</p>
+                            <ul class="prop_details mb-4 flex space-x-4 text-sm text-gray-500">
+                                <li><span>Beds: 5</span></li>
+                                <li><span>Baths: 3</span></li>
+                                <li><span>Sq Ft: 6000</span></li>
+                            </ul>
+                        </div>
+
+                        <div class="fp_footer flex justify-between items-center">
+                            <ul class="fp_meta flex space-x-2">
+                                <li><img class="w-8 h-8 rounded-full"
+                                        src="https://randomuser.me/api/portraits/men/52.jpg" alt="owner image"></li>
+                                <li><span class="text-sm text-gray-700">Ravi Sharma</span></li>
+                            </ul>
+                            <div class="fp_pdate text-sm text-gray-400">4 months ago</div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+
+
+            <!-- Featured Property Card 3 -->
+            <a href="#link">
+                <div
+                    class="feat_property bg-white shadow-lg rounded-lg overflow-hidden transform transition-all hover:scale-105 hover:shadow-xl w-80 mx-auto">
+                    <div class="thumb relative">
+                        <img class="w-full h-56 object-cover"
+                            src="https://creativelayers.net/themes/findhouse-html/images/property/fp3.jpg"
+                            alt="property image">
+                        <div class="thmb_cntnt absolute inset-0 flex justify-between p-4">
+                            <ul class="tag mb0 flex space-x-2">
+                                <li><span class="bg-blue-500 text-white px-3 py-1 text-xs rounded-full">For Rent</span>
+                                </li>
+                                <li><span
+                                        class="bg-yellow-500 text-white px-3 py-1 text-xs rounded-full">Featured</span>
+                                </li>
+                            </ul>
+                            <ul class="icon mb0 flex space-x-2">
+                                <li><span class="flaticon-transfer-1 text-white"></span></li>
+                                <li><span class="flaticon-heart text-white"></span></li>
+                            </ul>
+                        </div>
+                        <span
+                            class="fp_price absolute bottom-4 left-4 text-white font-bold text-lg">₹7,200<small>/mo</small></span>
+                    </div>
+
+                    <div class="details p-4">
+                        <div class="tc_content">
+                            <p class="text-thm text-sm">Condo</p>
+                            <h4 class="text-xl font-semibold text-gray-800 mb-2">Cozy Downtown Condo</h4>
+                            <p class="text-sm text-gray-600"><span class="flaticon-placeholder"></span> 2233 5th Ave,
+                                New Delhi, Delhi, 110001</p>
+                            <ul class="prop_details mb-4 flex space-x-4 text-sm text-gray-500">
+                                <li><span>Beds: 2</span></li>
+                                <li><span>Baths: 2</span></li>
+                                <li><span>Sq Ft: 1200</span></li>
+                            </ul>
+                        </div>
+
+                        <div class="fp_footer flex justify-between items-center">
+                            <ul class="fp_meta flex space-x-2">
+                                <li><img class="w-8 h-8 rounded-full"
+                                        src="https://randomuser.me/api/portraits/men/34.jpg" alt="owner image"></li>
+                                <li><span class="text-sm text-gray-700">Priya Mehta</span></li>
+                            </ul>
+                            <div class="fp_pdate text-sm text-gray-400">6 months ago</div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <!-- Testimonials Section (continued) -->
+    <div class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">What Our Clients Say</h2>
+                <p class="max-w-2xl mx-auto text-xl text-gray-500">Read testimonials from our satisfied clients</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Testimonial 1 -->
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="flex items-center mb-4">
+                        <div class="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center">
+                            <i class="fas fa-user text-blue-600"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="font-medium text-gray-900">Sarah Johnson</h3>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600">"The AI assistant helped me narrow down my search so efficiently. I found
+                        my dream home in just two weeks, and the market insights helped me negotiate a great price."</p>
+                </div>
+
+                <!-- Testimonial 2 -->
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="flex items-center mb-4">
+                        <div class="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center">
+                            <i class="fas fa-user text-blue-600"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="font-medium text-gray-900">Michael Chen</h3>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600">"I was new to real estate investing, and the AI assistant answered all my
+                        questions and guided me through the entire process. The neighborhood analysis tool was
+                        incredibly helpful."</p>
+                </div>
+
+                <!-- Testimonial 3 -->
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="flex items-center mb-4">
+                        <div class="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center">
+                            <i class="fas fa-user text-blue-600"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="font-medium text-gray-900">Emily Rodriguez</h3>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600">"Being able to chat with the AI assistant 24/7 made the house hunting
+                        process so much less stressful. It answered all my questions instantly and helped me find the
+                        perfect family home."</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="py-16 bg-blue-600">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl font-bold text-white mb-4">Ready to Find Your Dream Home?</h2>
+            <p class="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">Create an account today and start your journey with
+                EstateGenius</p>
+            <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 justify-center">
+                <button id="cta-register-btn"
+                    class="px-8 py-3 rounded-md bg-white text-blue-600 font-medium hover:bg-blue-50 transition-colors duration-300">Create
+                    Free Account</button>
+                <a href="/gemini"
+                    class="px-8 py-3 rounded-md bg-transparent border-2 border-white text-white font-medium hover:bg-blue-700 transition-colors duration-300 flex items-center justify-center">
+                    <i class="fas fa-robot mr-2"></i> Chat with AI Assistant
+                </a>
+            </div>
+        </div>
+    </div>
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <!-- Company Info -->
+                <div>
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-home text-blue-400 text-2xl mr-2"></i>
+                        <span class="font-bold text-xl">EstateGenius</span>
+                    </div>
+                    <p class="text-gray-400 mb-4">AI-powered real estate platform that combines cutting-edge technology
+                        with expert human agents.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Home</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Properties</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Services</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">About Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Contact</a></li>
+                        <li><a href="/gemini" class="text-gray-400 hover:text-white">AI Assistant</a></li>
+                    </ul>
+                </div>
+
+                <!-- Services -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Our Services</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Property Search</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">AI Recommendations</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Market Analysis</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Mortgage Calculator</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Neighborhood Insights</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Investment Advisory</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Contact Us</h3>
+                    <ul class="space-y-2">
+                        <li class="flex items-start">
+                            <i class="fas fa-map-marker-alt mt-1 mr-3 text-blue-400"></i>
+                            <span class="text-gray-400">123 Real Estate Ave, Suite 100, New York, NY 10001</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-phone-alt mr-3 text-blue-400"></i>
+                            <span class="text-gray-400">(555) 123-4567</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-envelope mr-3 text-blue-400"></i>
+                            <span class="text-gray-400">info@estategenius.com</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-800 mt-12 pt-8">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <p class="text-gray-400 text-sm mb-4 md:mb-0">&copy; 2025 EstateGenius. All rights reserved.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 text-sm hover:text-white">Privacy Policy</a>
+                        <a href="#" class="text-gray-400 text-sm hover:text-white">Terms of Service</a>
+                        <a href="#" class="text-gray-400 text-sm hover:text-white">Cookie Policy</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-lg max-w-md w-full p-6 fade-in">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-gray-900">Sign In</h3>
+                <button class="modal-close text-gray-400 hover:text-gray-500">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="login-form">
+                <div class="mb-4">
+                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input type="email" id="email"
+                        class="block w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="Enter your email">
+                </div>
+                <div class="mb-6">
+                    <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                    <input type="password" id="password"
+                        class="block w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="Enter your password">
+                </div>
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center">
+                        <input type="checkbox" id="remember-me"
+                            class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                        <label for="remember-me" class="ml-2 block text-sm text-gray-700">Remember me</label>
+                    </div>
+                    <a href="#" class="text-sm font-medium text-blue-600 hover:text-blue-500">Forgot password?</a>
+                </div>
+                <button type="submit"
+                    class="w-full p-3 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition-colors duration-300">Sign
+                    In</button>
+            </form>
+            <div class="mt-6 text-center">
+                <p class="text-sm text-gray-600">Don't have an account? <a href="#" id="switch-to-register"
+                        class="font-medium text-blue-600 hover:text-blue-500">Create one now</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="register-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-lg max-w-md w-full p-6 fade-in">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-gray-900">Create Account</h3>
+                <button class="modal-close text-gray-400 hover:text-gray-500">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="register-form">
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label for="first-name" class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                        <input type="text" id="first-name"
+                            class="block w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="First name">
+                    </div>
+                    <div>
+                        <label for="last-name" class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                        <input type="text" id="last-name"
+                            class="block w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="Last name">
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label for="reg-email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input type="email" id="reg-email"
+                        class="block w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="Enter your email">
+                </div>
+                <div class="mb-4">
+                    <label for="reg-password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                    <input type="password" id="reg-password"
+                        class="block w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="Create a password">
+                </div>
+                <div class="mb-6">
+                    <label for="confirm-password" class="block text-sm font-medium text-gray-700 mb-1">Confirm
+                        Password</label>
+                    <input type="password" id="confirm-password"
+                        class="block w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="Confirm your password">
+                </div>
+                <div class="flex items-center mb-6">
+                    <input type="checkbox" id="terms"
+                        class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                    <label for="terms" class="ml-2 block text-sm text-gray-700">I agree to the <a href="#"
+                            class="text-blue-600 hover:text-blue-500">Terms of Service</a> and <a href="#"
+                            class="text-blue-600 hover:text-blue-500">Privacy Policy</a></label>
+                </div>
+                <button type="submit"
+                    class="w-full p-3 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition-colors duration-300">Create
+                    Account</button>
+            </form>
+            <div class="mt-6 text-center">
+                <p class="text-sm text-gray-600">Already have an account? <a href="#" id="switch-to-login"
+                        class="font-medium text-blue-600 hover:text-blue-500">Sign in</a></p>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        const images = [
+            "https://htmldemo.net/dominno/dominno/images/slider/1.jpg",
+            "https://htmldemo.net/dominno/dominno/images/slider/2.jpg"
+        ];
+
+        let currentImage = 0;
+
+        function changeImage(index) {
+            const currentBgImage = document.getElementById(`bg-image-${currentImage + 1}`);
+            const nextBgImage = document.getElementById(`bg-image-${index + 1}`);
+
+            // Fade out current image
+            currentBgImage.classList.remove("visible");
+
+            // Fade in next image
+            nextBgImage.classList.add("visible");
+
+            // Update the current image index
+            currentImage = index;
+        }
+
+        // Initially show the first image
+        document.getElementById("bg-image-1").classList.add("visible");
+
+        const section = document.querySelector('#about-section');
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Add classes to trigger animation
+                    entry.target.classList.remove('opacity-0');
+                    entry.target.classList.add('animate-fade-in-left', 'animate-fade-in-right');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.5 // Trigger when 50% of the section is visible
+        });
+
+        observer.observe(section);
+
+        // login/register
+        document.addEventListener("DOMContentLoaded", function () {
+            const loginModal = document.getElementById("login-modal");
+            const registerModal = document.getElementById("register-modal");
+            const switchToRegister = document.getElementById("switch-to-register");
+            const switchToLogin = document.getElementById("switch-to-login");
+            const loginForm = document.getElementById("login-form");
+            const registerForm = document.getElementById("register-form");
+            const modalCloseButtons = document.querySelectorAll(".modal-close");
+            const openLoginButton = document.getElementById("open-login"); // Added
+            const openRegisterButton = document.getElementById("open-register"); // Added
+
+            function showModal(modal) {
+                modal.classList.remove("hidden");
+            }
+
+            function hideModal(modal) {
+                modal.classList.add("hidden");
+            }
+
+            // Open Login Modal
+            openLoginButton.addEventListener("click", function () {
+                showModal(loginModal);
+            });
+
+            // Open Register Modal
+            openRegisterButton.addEventListener("click", function () {
+                showModal(registerModal);
+            });
+
+            modalCloseButtons.forEach(button => {
+                button.addEventListener("click", function () {
+                    hideModal(loginModal);
+                    hideModal(registerModal);
+                });
+            });
+
+            switchToRegister.addEventListener("click", function (event) {
+                event.preventDefault();
+                hideModal(loginModal);
+                showModal(registerModal);
+            });
+
+            switchToLogin.addEventListener("click", function (event) {
+                event.preventDefault();
+                hideModal(registerModal);
+                showModal(loginModal);
+            });
+
+            loginForm.addEventListener("submit", function (event) {
+                event.preventDefault();
+                const email = document.getElementById("email").value;
+                const password = document.getElementById("password").value;
+
+                if (email && password) {
+                    const userName = email.split("@")[0];
+                    greetUser(userName);
+                    hideModal(loginModal);
+                } else {
+                    alert("Please enter valid credentials");
+                }
+            });
+
+            registerForm.addEventListener("submit", function (event) {
+                event.preventDefault();
+                const firstName = document.getElementById("first-name").value;
+                const lastName = document.getElementById("last-name").value;
+                const email = document.getElementById("reg-email").value;
+                const password = document.getElementById("reg-password").value;
+                const confirmPassword = document.getElementById("confirm-password").value;
+                const terms = document.getElementById("terms").checked;
+
+                if (firstName && lastName && email && password === confirmPassword && terms) {
+                    greetUser(firstName);
+                    hideModal(registerModal);
+                } else {
+                    alert("Please fill out all fields correctly and accept the terms.");
+                }
+            });
+
+            function greetUser(name) {
+                const userSection = document.createElement("div");
+                userSection.innerHTML = `<p class='text-lg font-semibold text-white bg-blue-600 p-2 rounded-md text-center fixed top-0 left-0 right-0'>Welcome, ${name}!</p>`;
+                document.body.prepend(userSection);
+            }
+        });
+
+    </script>
+</body>
+
+</html>
